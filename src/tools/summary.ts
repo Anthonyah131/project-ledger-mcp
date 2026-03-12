@@ -27,6 +27,11 @@ export function registerSummaryTools(
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
         ),
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no project name is provided."
+        ),
       from: z
         .preprocess(coerceOptionalString, z.string().optional())
         .describe(
@@ -66,6 +71,11 @@ export function registerSummaryTools(
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
         ),
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no project name is provided."
+        ),
     },
     async (args) => {
       try {
@@ -94,6 +104,11 @@ export function registerSummaryTools(
         .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
+        ),
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no project name is provided."
         ),
       minPriority: z
         .preprocess(

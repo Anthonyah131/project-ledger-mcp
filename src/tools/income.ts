@@ -28,6 +28,11 @@ export function registerIncomeTools(
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
         ),
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no project name is provided."
+        ),
       from: z
         .preprocess(coerceOptionalString, z.string().optional())
         .describe(
@@ -39,12 +44,9 @@ export function registerIncomeTools(
           "Optional. End date in YYYY-MM-DD format. Omit to let backend apply default range for the selected granularity. Do not send natural-language dates."
         ),
       granularity: z
-        .preprocess(
-          coerceOptionalLowercaseString,
-          z.enum(["day", "week", "month"]).optional()
-        )
+        .preprocess(coerceOptionalLowercaseString, z.string().optional())
         .describe(
-          "Optional. Allowed values: day, week, month. Omit to use default month."
+          "Optional. Time bucketing value. Accepts variants like day/daily, week/weekly, month/monthly; unknown values are handled by backend fallback. Omit to use default month."
         ),
       comparePreviousPeriod: z
         .preprocess(
@@ -70,6 +72,16 @@ export function registerIncomeTools(
     "get_income_by_project",
     "Get income by project.",
     {
+      projectId: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
+        ),
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no project name is provided."
+        ),
       from: z
         .preprocess(coerceOptionalString, z.string().optional())
         .describe(

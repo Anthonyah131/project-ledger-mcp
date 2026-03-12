@@ -30,6 +30,11 @@ export function registerPaymentTools(
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
         ),
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no project name is provided."
+        ),
       dueBefore: z
         .preprocess(coerceOptionalString, z.string().optional())
         .describe(
@@ -47,6 +52,11 @@ export function registerPaymentTools(
         )
         .describe(
           "Optional. Minimum remaining balance threshold (number). Omit if the user did not ask for an amount floor."
+        ),
+      search: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Case-insensitive partial text filter over obligation title/description. Omit when no text search is requested."
         ),
       page: z
         .preprocess(
@@ -93,6 +103,11 @@ export function registerPaymentTools(
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
         ),
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no project name is provided."
+        ),
       from: z
         .preprocess(coerceOptionalString, z.string().optional())
         .describe(
@@ -108,10 +123,20 @@ export function registerPaymentTools(
         .describe(
           "Optional. Payment method UUID from trusted data context. Never invent IDs or use labels/template expressions. Omit if method is unknown."
         ),
+      paymentMethodName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Payment method name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no method name is provided."
+        ),
       categoryId: z
         .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Category UUID from trusted data context. Never invent IDs or use category name as ID. Omit if category is not explicitly provided."
+        ),
+      categoryName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Category name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no category name is provided."
         ),
       minAmount: z
         .preprocess(
@@ -120,6 +145,11 @@ export function registerPaymentTools(
         )
         .describe(
           "Optional. Minimum payment amount threshold (number). Omit if the user did not ask for an amount floor."
+        ),
+      search: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Case-insensitive partial text filter over title/description. Omit when no text search is requested."
         ),
       page: z
         .preprocess(
@@ -174,6 +204,11 @@ export function registerPaymentTools(
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
         ),
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no project name is provided."
+        ),
       overdueDaysMin: z
         .preprocess(
           coerceOptionalNumber,
@@ -189,6 +224,11 @@ export function registerPaymentTools(
         )
         .describe(
           "Optional. Minimum remaining balance threshold (number). Omit if the user did not ask for an amount floor."
+        ),
+      search: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Case-insensitive partial text filter over obligation title/description. Omit when no text search is requested."
         ),
       page: z
         .preprocess(
@@ -235,6 +275,11 @@ export function registerPaymentTools(
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
         ),
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no project name is provided."
+        ),
       from: z
         .preprocess(coerceOptionalString, z.string().optional())
         .describe(
@@ -246,12 +291,9 @@ export function registerPaymentTools(
           "Optional. End date in YYYY-MM-DD format. Omit when user did not request an upper bound. Do not send natural-language dates."
         ),
       direction: z
-        .preprocess(
-          coerceOptionalLowercaseString,
-          z.enum(["expense", "income", "both"]).optional()
-        )
+        .preprocess(coerceOptionalLowercaseString, z.string().optional())
         .describe(
-          "Optional. Allowed values: expense, income, both. Omit to use default both."
+          "Optional. Payment flow direction. Accepts variants like expense|expenses|out|outgoing, income|incomes|in|incoming, both; unknown values are handled by backend fallback. Omit to use default both."
         ),
       top: z
         .preprocess(

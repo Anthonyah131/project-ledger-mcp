@@ -27,6 +27,11 @@ export function registerObligationTools(
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
         ),
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no project name is provided."
+        ),
       dueWithinDays: z
         .preprocess(
           coerceOptionalNumber,
@@ -42,6 +47,11 @@ export function registerObligationTools(
         )
         .describe(
           "Optional. Minimum remaining balance threshold (number). Omit if the user did not ask for an amount floor."
+        ),
+      search: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Case-insensitive partial text filter over obligation title/description. Omit when no text search is requested."
         ),
       page: z
         .preprocess(
@@ -88,13 +98,20 @@ export function registerObligationTools(
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
         ),
-      status: z
-        .preprocess(
-          coerceOptionalLowercaseString,
-          z.enum(["open", "partially_paid", "overdue"]).optional()
-        )
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
         .describe(
-          "Optional. Allowed values: open, partially_paid, overdue. Omit when user did not request a status filter."
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no project name is provided."
+        ),
+      status: z
+        .preprocess(coerceOptionalLowercaseString, z.string().optional())
+        .describe(
+          "Optional. Case-insensitive obligation status filter. Common values: open, partially_paid, overdue. Omit when user did not request a status filter."
+        ),
+      search: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Case-insensitive partial text filter over obligation title/description. Omit when no text search is requested."
         ),
       page: z
         .preprocess(

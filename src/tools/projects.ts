@@ -29,13 +29,15 @@ export function registerProjectTools(
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if the user did not specify a project."
         ),
-      status: z
-        .preprocess(
-          coerceOptionalLowercaseString,
-          z.enum(["active", "completed", "at_risk", "inactive"]).optional()
-        )
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
         .describe(
-          "Optional. Allowed values: active, completed, at_risk, inactive. Omit when the user did not ask to filter by status."
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when the user did not provide a project name."
+        ),
+      status: z
+        .preprocess(coerceOptionalLowercaseString, z.string().optional())
+        .describe(
+          "Optional. Case-insensitive project status filter. Common values: active, completed, at_risk, inactive. Omit when the user did not ask to filter by status."
         ),
       activityDays: z
         .preprocess(
@@ -44,14 +46,6 @@ export function registerProjectTools(
         )
         .describe(
           "Optional. Positive integer window in days for recent activity analysis. Omit to use backend default behavior (typically 30)."
-        ),
-      dueInDays: z
-        .preprocess(
-          coerceOptionalNumber,
-          z.union([z.number().int(), z.string()]).optional()
-        )
-        .describe(
-          "Optional. Positive integer window in days for upcoming deadlines context. Omit to use backend default behavior (typically 30)."
         ),
       page: z
         .preprocess(
@@ -115,6 +109,11 @@ export function registerProjectTools(
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never send project name/userId/template strings. Omit if project is not specified."
         ),
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when the user did not provide a project name."
+        ),
       dueFrom: z
         .preprocess(coerceOptionalString, z.string().optional())
         .describe(
@@ -132,6 +131,11 @@ export function registerProjectTools(
         )
         .describe(
           "Optional. true includes overdue obligations, false excludes them. Omit to use backend default (true)."
+        ),
+      search: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Case-insensitive partial text filter over obligation title/description. Omit when no text search is requested."
         ),
       page: z
         .preprocess(
@@ -177,6 +181,11 @@ export function registerProjectTools(
         .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never send project name/userId/template strings. Omit if project is not specified."
+        ),
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when the user did not provide a project name."
         ),
       activityDays: z
         .preprocess(

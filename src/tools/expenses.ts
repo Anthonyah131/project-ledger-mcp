@@ -30,6 +30,11 @@ export function registerExpenseTools(
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
         ),
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no project name is provided."
+        ),
       from: z
         .preprocess(coerceOptionalString, z.string().optional())
         .describe(
@@ -47,6 +52,16 @@ export function registerExpenseTools(
         )
         .describe(
           "Optional. true includes previous-period comparison metrics, false disables comparison. Omit when comparison is not requested."
+        ),
+      categoryId: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Expense category UUID from trusted data context. Never invent IDs or use category name/template placeholders. Omit when category is not specified."
+        ),
+      categoryName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Category name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no category name is provided."
         ),
     },
     async (args) => {
@@ -68,6 +83,11 @@ export function registerExpenseTools(
         .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
+        ),
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no project name is provided."
         ),
       from: z
         .preprocess(coerceOptionalString, z.string().optional())
@@ -119,6 +139,16 @@ export function registerExpenseTools(
     "get_expenses_by_project",
     "Get spending by project with budget context.",
     {
+      projectId: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
+        ),
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no project name is provided."
+        ),
       from: z
         .preprocess(coerceOptionalString, z.string().optional())
         .describe(
@@ -166,6 +196,11 @@ export function registerExpenseTools(
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
         ),
+      projectName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Project name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no project name is provided."
+        ),
       from: z
         .preprocess(coerceOptionalString, z.string().optional())
         .describe(
@@ -177,17 +212,19 @@ export function registerExpenseTools(
           "Optional. End date in YYYY-MM-DD format. Omit to let backend apply default range for the selected granularity. Do not send natural-language dates."
         ),
       granularity: z
-        .preprocess(
-          coerceOptionalLowercaseString,
-          z.enum(["day", "week", "month"]).optional()
-        )
+        .preprocess(coerceOptionalLowercaseString, z.string().optional())
         .describe(
-          "Optional. Allowed values: day, week, month. Omit to use default month."
+          "Optional. Time bucketing value. Accepts variants like day/daily, week/weekly, month/monthly; unknown values are handled by backend fallback. Omit to use default month."
         ),
       categoryId: z
         .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Expense category UUID from trusted data context. Never invent IDs or use category name/template placeholders. Omit when category is not specified."
+        ),
+      categoryName: z
+        .preprocess(coerceOptionalString, z.string().optional())
+        .describe(
+          "Optional. Category name for fuzzy matching (equals, startsWith, contains; case-insensitive). Omit when no category name is provided."
         ),
     },
     async (args) => {
