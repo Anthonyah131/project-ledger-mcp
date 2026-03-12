@@ -32,21 +32,20 @@ Implicaciones de diseño:
 
 - Base path: `/api/mcp`
 - Todos los endpoints son `GET`.
-- Requieren un service token MCP válido.
-- Requieren el encabezado `X-User-Id` con el id real del usuario.
+- Requieren service token Bearer válido del servidor MCP.
 - Requieren policy `Plan:CanUseApi`.
 
-Headers recomendados:
+Headers:
 
-```http
-Authorization: Bearer <MCP_SERVICE_TOKEN>
-X-User-Id: <userId>
-Accept: application/json
-```
+- `Authorization` (required): `Bearer <mcp_service_token>`
+- `X-User-Id` (required): `<userId>`
+- `Accept` (optional): `application/json`
 
 Notas importantes:
 
-- El `userId` no se recibe por query/body; debe enviarse por encabezado `X-User-Id`.
+- El service token se valida contra la variable de entorno `MCP_SERVICE_TOKEN`.
+- `X-User-Id` debe contener el `userId` real del usuario en la base de datos.
+- La API construye internamente un principal autenticado equivalente al JWT para reutilizar filters, policies y acceso multi-tenant sin bifurcar controladores/servicios.
 - Si se envía `projectId`, la API valida acceso del usuario al proyecto.
 
 ## 3. Convenciones Comunes
@@ -55,10 +54,10 @@ Notas importantes:
 
 Cuando un endpoint hereda `PagedRequest`, acepta:
 
-- `page` (default `1`, mínimo `1`)
-- `pageSize` (default `20`, rango `1..100`)
-- `sortBy` (campo opcional, depende del endpoint)
-- `sortDirection` (`asc` o `desc`, default `desc`)
+- `page` (optional, default `1`, mínimo `1`)
+- `pageSize` (optional, default `20`, rango `1..100`)
+- `sortBy` (optional, depende del endpoint)
+- `sortDirection` (optional, `asc` o `desc`, default `desc`)
 
 Formato de respuesta paginada:
 
@@ -108,6 +107,8 @@ Obligaciones (`status`):
 - `paid`
 
 ## 3.5 Errores
+
+Todos los filtros y query params son nullable en el backend: omitir un parámetro nunca retorna `400`. Solo retornan `400` valores inválidos (rango de fechas invertido, valor fuera de rango numérico, enum desconocido).
 
 Respuestas de error estándar:
 
@@ -177,10 +178,10 @@ Uso típico: inicializar contexto de tools antes de consultas analíticas.
 
 Query principal:
 
-- `projectId` opcional
-- `status` opcional: `active|completed|at_risk|inactive`
-- `activityDays` default `30`
-- `dueInDays` default `30` (actualmente no impacta el cálculo del servicio)
+- `projectId` (optional)
+- `status` (optional): `active|completed|at_risk|inactive`
+- `activityDays` (optional, default `30`)
+- `dueInDays` (optional, default `30`, actualmente no impacta el cálculo del servicio)
 - Paginación estándar
 
 `sortBy` soportado:
@@ -228,9 +229,10 @@ Respuesta:
 
 Query:
 
-- `projectId` opcional
-- `dueBefore`, `dueAfter`
-- `minRemainingAmount` opcional
+- `projectId` (optional)
+- `dueBefore` (optional)
+- `dueAfter` (optional)
+- `minRemainingAmount` (optional)
 - Paginación estándar
 
 Devuelve obligaciones con saldo pendiente (`remainingAmount > 0`).
@@ -239,10 +241,12 @@ Devuelve obligaciones con saldo pendiente (`remainingAmount > 0`).
 
 Query:
 
-- `projectId` opcional
-- `from`, `to`
-- `paymentMethodId`, `categoryId` opcionales
-- `minAmount` opcional
+- `projectId` (optional)
+- `from` (optional)
+- `to` (optional)
+- `paymentMethodId` (optional)
+- `categoryId` (optional)
+- `minAmount` (optional)
 - Paginación estándar
 
 `sortBy` soportado:
@@ -256,9 +260,9 @@ Cada item contiene metadatos de ingreso y montos original/convertido.
 
 Query:
 
-- `projectId` opcional
-- `overdueDaysMin` default `0`
-- `minRemainingAmount` opcional
+- `projectId` (optional)
+- `overdueDaysMin` (optional, default `0`)
+- `minRemainingAmount` (optional)
 - Paginación estándar
 
 Entrega solo obligaciones vencidas con saldo pendiente.
@@ -267,10 +271,11 @@ Entrega solo obligaciones vencidas con saldo pendiente.
 
 Query:
 
-- `projectId` opcional
-- `from`, `to`
-- `direction`: `expense|income|both` (default `both`)
-- `top`: `1..100` (default `10`)
+- `projectId` (optional)
+- `from` (optional)
+- `to` (optional)
+- `direction` (optional): `expense|income|both` (default `both`)
+- `top` (optional): `1..100` (default `10`)
 
 Respuesta:
 
@@ -283,9 +288,10 @@ Respuesta:
 
 Query:
 
-- `projectId` opcional
-- `from`, `to`
-- `comparePreviousPeriod` (`true/false`)
+- `projectId` (optional)
+- `from` (optional)
+- `to` (optional)
+- `comparePreviousPeriod` (optional, `true/false`)
 
 Respuesta:
 
@@ -296,11 +302,12 @@ Respuesta:
 
 Query:
 
-- `projectId` opcional
-- `from`, `to`
-- `top` (`1..100`, default `10`)
-- `includeOthers` (agrega bucket `Others`)
-- `includeTrend` (calcula `trendDelta` vs periodo previo)
+- `projectId` (optional)
+- `from` (optional)
+- `to` (optional)
+- `top` (optional, `1..100`, default `10`)
+- `includeOthers` (optional, agrega bucket `Others`)
+- `includeTrend` (optional, calcula `trendDelta` vs periodo previo)
 
 Respuesta:
 
@@ -311,9 +318,10 @@ Respuesta:
 
 Query:
 
-- `from`, `to`
-- `top` (`1..100`, default `10`)
-- `includeBudgetContext` (default `true`)
+- `from` (optional)
+- `to` (optional)
+- `top` (optional, `1..100`, default `10`)
+- `includeBudgetContext` (optional, default `true`)
 
 Respuesta por proyecto:
 
@@ -324,10 +332,11 @@ Respuesta por proyecto:
 
 Query:
 
-- `projectId` opcional
-- `from`, `to` opcionales
-- `granularity`: `day|week|month` (default `month`)
-- `categoryId` opcional
+- `projectId` (optional)
+- `from` (optional)
+- `to` (optional)
+- `granularity` (optional): `day|week|month` (default `month`)
+- `categoryId` (optional)
 
 Respuesta:
 
@@ -340,10 +349,11 @@ Respuesta:
 
 Query:
 
-- `projectId` opcional
-- `from`, `to` opcionales
-- `granularity`: `day|week|month` (default `month`)
-- `comparePreviousPeriod`
+- `projectId` (optional)
+- `from` (optional)
+- `to` (optional)
+- `granularity` (optional): `day|week|month` (default `month`)
+- `comparePreviousPeriod` (optional)
 
 Respuesta:
 
@@ -355,8 +365,9 @@ Respuesta:
 
 Query:
 
-- `from`, `to`
-- `top` (`1..100`, default `10`)
+- `from` (optional)
+- `to` (optional)
+- `top` (optional, `1..100`, default `10`)
 
 Respuesta:
 
@@ -369,9 +380,9 @@ Respuesta:
 
 Query:
 
-- `projectId` opcional
-- `dueWithinDays` (`1..3650`, default `30`)
-- `minRemainingAmount` opcional
+- `projectId` (optional)
+- `dueWithinDays` (optional, `1..3650`, default `30`)
+- `minRemainingAmount` (optional)
 - Paginación estándar
 
 Incluye obligaciones con due date entre hoy y el límite configurado.
@@ -380,8 +391,8 @@ Incluye obligaciones con due date entre hoy y el límite configurado.
 
 Query:
 
-- `projectId` opcional
-- `status` opcional: `open|partially_paid|overdue`
+- `projectId` (optional)
+- `status` (optional): `open|partially_paid|overdue`
 - Paginación estándar
 
 Incluye obligaciones con saldo restante positivo.
@@ -392,8 +403,9 @@ Incluye obligaciones con saldo restante positivo.
 
 Query:
 
-- `projectId` opcional
-- `from`, `to` opcionales
+- `projectId` (optional)
+- `from` (optional)
+- `to` (optional)
 
 Respuesta:
 
@@ -408,8 +420,8 @@ El score combina balance neto, mora, presión de presupuesto e ingresos vs gasto
 
 Query:
 
-- `month` formato `YYYY-MM` (opcional, default mes actual)
-- `projectId` opcional
+- `month` (optional, formato `YYYY-MM`, default mes actual)
+- `projectId` (optional)
 
 Respuesta:
 
@@ -423,9 +435,9 @@ Respuesta:
 
 Query:
 
-- `month` formato `YYYY-MM` opcional
-- `projectId` opcional
-- `minPriority` (`0..100`)
+- `month` (optional, formato `YYYY-MM`)
+- `projectId` (optional)
+- `minPriority` (optional, `0..100`, default `0`)
 
 Respuesta:
 
@@ -438,7 +450,7 @@ Respuesta:
 
 ```bash
 curl -X GET "https://<host>/api/mcp/context" \
-  -H "Authorization: Bearer <MCP_SERVICE_TOKEN>" \
+  -H "Authorization: Bearer <token>" \
   -H "X-User-Id: <userId>" \
   -H "Accept: application/json"
 ```
@@ -447,7 +459,7 @@ curl -X GET "https://<host>/api/mcp/context" \
 
 ```bash
 curl -G "https://<host>/api/mcp/projects/portfolio" \
-  -H "Authorization: Bearer <MCP_SERVICE_TOKEN>" \
+  -H "Authorization: Bearer <token>" \
   -H "X-User-Id: <userId>" \
   --data-urlencode "page=1" \
   --data-urlencode "pageSize=20" \
@@ -460,7 +472,7 @@ curl -G "https://<host>/api/mcp/projects/portfolio" \
 
 ```bash
 curl -G "https://<host>/api/mcp/expenses/trends" \
-  -H "Authorization: Bearer <MCP_SERVICE_TOKEN>" \
+  -H "Authorization: Bearer <token>" \
   -H "X-User-Id: <userId>" \
   --data-urlencode "granularity=month" \
   --data-urlencode "from=2025-01-01" \
@@ -476,6 +488,160 @@ Flujo mínimo recomendado para evitar respuestas ambiguas del agente:
 3. Ejecutar consulta agregada principal (por ejemplo `summary/monthly-overview` o `expenses/totals`).
 4. Si el usuario pide detalle, invocar endpoint drill-down (`expenses/by-category`, `payments/received`, etc.).
 5. Si hay muchos resultados, paginar y resumir por bloques en vez de cargar todo en una sola respuesta del LLM.
+
+## 6.5 Minimal call por endpoint (cero parámetros opcionales)
+
+### GET /api/mcp/context
+
+```bash
+curl -X GET "https://<host>/api/mcp/context" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/projects/portfolio
+
+```bash
+curl -G "https://<host>/api/mcp/projects/portfolio" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/projects/deadlines
+
+```bash
+curl -G "https://<host>/api/mcp/projects/deadlines" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/projects/active-vs-completed
+
+```bash
+curl -G "https://<host>/api/mcp/projects/active-vs-completed" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/payments/pending
+
+```bash
+curl -G "https://<host>/api/mcp/payments/pending" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/payments/received
+
+```bash
+curl -G "https://<host>/api/mcp/payments/received" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/payments/overdue
+
+```bash
+curl -G "https://<host>/api/mcp/payments/overdue" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/payments/by-method
+
+```bash
+curl -G "https://<host>/api/mcp/payments/by-method" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/expenses/totals
+
+```bash
+curl -G "https://<host>/api/mcp/expenses/totals" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/expenses/by-category
+
+```bash
+curl -G "https://<host>/api/mcp/expenses/by-category" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/expenses/by-project
+
+```bash
+curl -G "https://<host>/api/mcp/expenses/by-project" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/expenses/trends
+
+```bash
+curl -G "https://<host>/api/mcp/expenses/trends" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/income/by-period
+
+```bash
+curl -G "https://<host>/api/mcp/income/by-period" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/income/by-project
+
+```bash
+curl -G "https://<host>/api/mcp/income/by-project" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/obligations/upcoming
+
+```bash
+curl -G "https://<host>/api/mcp/obligations/upcoming" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/obligations/unpaid
+
+```bash
+curl -G "https://<host>/api/mcp/obligations/unpaid" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/summary/financial-health
+
+```bash
+curl -G "https://<host>/api/mcp/summary/financial-health" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/summary/monthly-overview
+
+```bash
+curl -G "https://<host>/api/mcp/summary/monthly-overview" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
+
+### GET /api/mcp/summary/alerts
+
+```bash
+curl -G "https://<host>/api/mcp/summary/alerts" \
+  -H "Authorization: Bearer <token>" \
+  -H "X-User-Id: <userId>"
+```
 
 ## 7. Recomendaciones para Integración de Tools (Agente IA)
 
@@ -512,12 +678,21 @@ Sugerencia de contrato por tool:
 
 ## 7.3 Política de retry recomendada para tools
 
-- `400`: no reintentar sin corregir parámetros.
+- `400`: ocurre únicamente por valor inválido (fecha invertida, número fuera de rango, enum desconocido), nunca por parámetro omitido. Corregir el valor antes de reintentar.
 - `401/403`: no reintentar automáticamente; escalar a renovación de sesión/permisos.
 - `404`: tratar como recurso no encontrado en el scope del usuario.
 - `500`: reintento con backoff limitado (por ejemplo 1-2 intentos).
 
-## 8. Fuente de Verdad Técnica
+## 8. Parameter Optionality Rules
+
+- Todos los filtros/query params son `(optional)` salvo que explícitamente se marque `(required)`.
+- Todos los DTOs de request son nullable en el backend: omitir un parámetro nunca produce un error de validación.
+- Un filtro omitido se ignora; no se fuerza un valor restrictivo por defecto para filtrar resultados.
+- Un parámetro operativo omitido (`top`, `granularity`, `direction`, flags booleanos) usa el default funcional documentado.
+- En paginación, si `page`, `pageSize` o `sortDirection` se omiten, se aplican sus defaults.
+- Los únicos headers requeridos para MCP son `Authorization` y `X-User-Id`.
+
+## 9. Fuente de Verdad Técnica
 
 Contratos y lógica de negocio están definidos en:
 

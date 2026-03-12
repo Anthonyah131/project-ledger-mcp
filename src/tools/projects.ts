@@ -32,6 +32,12 @@ export function registerProjectTools(
         .positive()
         .optional()
         .describe("Recent activity days"),
+      dueInDays: z
+        .number()
+        .int()
+        .positive()
+        .optional()
+        .describe("Upcoming deadline window in days"),
       page: z
         .number()
         .int()
