@@ -20,23 +20,33 @@ export function registerIncomeTools(
       projectId: z
         .string()
         .optional()
-        .describe("Single project ID"),
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
+        ),
       from: z
         .string()
         .optional()
-        .describe("Start date or default"),
+        .describe(
+          "Optional. Start date in YYYY-MM-DD format. Omit to let backend apply default range for the selected granularity. Do not send natural-language dates."
+        ),
       to: z
         .string()
         .optional()
-        .describe("End date or default"),
+        .describe(
+          "Optional. End date in YYYY-MM-DD format. Omit to let backend apply default range for the selected granularity. Do not send natural-language dates."
+        ),
       granularity: z
         .enum(["day", "week", "month"])
         .optional()
-        .describe("Bucket size"),
+        .describe(
+          "Optional. Allowed values: day, week, month. Omit to use default month."
+        ),
       comparePreviousPeriod: z
         .boolean()
         .optional()
-        .describe("Compare previous period"),
+        .describe(
+          "Optional. true includes previous-period comparison metrics, false disables comparison. Omit when comparison is not requested."
+        ),
     },
     async (args) => {
       try {
@@ -56,18 +66,24 @@ export function registerIncomeTools(
       from: z
         .string()
         .optional()
-        .describe("Start date YYYY-MM-DD"),
+        .describe(
+          "Optional. Start date in YYYY-MM-DD format. Omit when user did not request a start date. Do not send natural-language dates."
+        ),
       to: z
         .string()
         .optional()
-        .describe("End date YYYY-MM-DD"),
+        .describe(
+          "Optional. End date in YYYY-MM-DD format. Omit when user did not request an end date. Do not send natural-language dates."
+        ),
       top: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Maximum projects returned"),
+        .describe(
+          "Optional. Maximum projects to return (integer 1..100). Omit to use backend default (10)."
+        ),
     },
     async (args) => {
       try {

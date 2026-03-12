@@ -21,15 +21,21 @@ export function registerSummaryTools(
       projectId: z
         .string()
         .optional()
-        .describe("Single project ID"),
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
+        ),
       from: z
         .string()
         .optional()
-        .describe("Evaluation start date"),
+        .describe(
+          "Optional. Evaluation start date in YYYY-MM-DD format. Omit when user did not request a start date. Do not send natural-language dates."
+        ),
       to: z
         .string()
         .optional()
-        .describe("Evaluation end date"),
+        .describe(
+          "Optional. Evaluation end date in YYYY-MM-DD format. Omit when user did not request an end date. Do not send natural-language dates."
+        ),
     },
     async (args) => {
       try {
@@ -52,11 +58,15 @@ export function registerSummaryTools(
       month: z
         .string()
         .optional()
-        .describe("Month YYYY-MM"),
+        .describe(
+          "Optional. Month in YYYY-MM format. Omit to use current month. Do not send natural-language values like this month or este mes."
+        ),
       projectId: z
         .string()
         .optional()
-        .describe("Single project ID"),
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
+        ),
     },
     async (args) => {
       try {
@@ -79,18 +89,24 @@ export function registerSummaryTools(
       month: z
         .string()
         .optional()
-        .describe("Month YYYY-MM"),
+        .describe(
+          "Optional. Month in YYYY-MM format. Omit to use current month. Do not send natural-language values like this month or este mes."
+        ),
       projectId: z
         .string()
         .optional()
-        .describe("Single project ID"),
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
+        ),
       minPriority: z
         .number()
         .int()
         .min(0)
         .max(100)
         .optional()
-        .describe("Minimum alert priority"),
+        .describe(
+          "Optional. Minimum alert priority threshold (integer 0..100). Omit to use backend default (0)."
+        ),
     },
     async (args) => {
       try {

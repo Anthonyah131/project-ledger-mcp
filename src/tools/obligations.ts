@@ -20,35 +20,47 @@ export function registerObligationTools(
       projectId: z
         .string()
         .optional()
-        .describe("Single project ID"),
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
+        ),
       dueWithinDays: z
         .number()
         .int()
         .min(1)
         .max(3650)
         .optional()
-        .describe("Days ahead to check"),
+        .describe(
+          "Optional. Days-ahead window (integer 1..3650). Omit to use backend default (30)."
+        ),
       minRemainingAmount: z
         .number()
         .optional()
-        .describe("Minimum remaining balance"),
+        .describe(
+          "Optional. Minimum remaining balance threshold (number). Omit if the user did not ask for an amount floor."
+        ),
       page: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Page number"),
+        .describe(
+          "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
+        ),
       pageSize: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Results per page"),
+        .describe(
+          "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
+        ),
       sortDirection: z
         .enum(["asc", "desc"])
         .optional()
-        .describe("Sort direction"),
+        .describe(
+          "Optional. Allowed values: asc or desc. Omit to use default desc."
+        ),
     },
     async (args) => {
       try {
@@ -68,28 +80,38 @@ export function registerObligationTools(
       projectId: z
         .string()
         .optional()
-        .describe("Single project ID"),
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
+        ),
       status: z
         .enum(["open", "partially_paid", "overdue"])
         .optional()
-        .describe("Obligation status"),
+        .describe(
+          "Optional. Allowed values: open, partially_paid, overdue. Omit when user did not request a status filter."
+        ),
       page: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Page number"),
+        .describe(
+          "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
+        ),
       pageSize: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Results per page"),
+        .describe(
+          "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
+        ),
       sortDirection: z
         .enum(["asc", "desc"])
         .optional()
-        .describe("Sort direction"),
+        .describe(
+          "Optional. Allowed values: asc or desc. Omit to use default desc."
+        ),
     },
     async (args) => {
       try {

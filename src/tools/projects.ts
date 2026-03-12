@@ -21,36 +21,48 @@ export function registerProjectTools(
       projectId: z
         .string()
         .optional()
-        .describe("Single project ID"),
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if the user did not specify a project."
+        ),
       status: z
         .enum(["active", "completed", "at_risk", "inactive"])
         .optional()
-        .describe("Project status"),
+        .describe(
+          "Optional. Allowed values: active, completed, at_risk, inactive. Omit when the user did not ask to filter by status."
+        ),
       activityDays: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Recent activity days"),
+        .describe(
+          "Optional. Positive integer window in days for recent activity analysis. Omit to use backend default behavior (typically 30)."
+        ),
       dueInDays: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Upcoming deadline window in days"),
+        .describe(
+          "Optional. Positive integer window in days for upcoming deadlines context. Omit to use backend default behavior (typically 30)."
+        ),
       page: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Page number"),
+        .describe(
+          "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
+        ),
       pageSize: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Results per page"),
+        .describe(
+          "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
+        ),
       sortBy: z
         .enum([
           "name",
@@ -61,11 +73,15 @@ export function registerProjectTools(
           "progress",
         ])
         .optional()
-        .describe("Sort field"),
+        .describe(
+          "Optional. Allowed values: name, status, totalSpent, totalIncome, netBalance, progress. Omit to use backend fallback sort."
+        ),
       sortDirection: z
         .enum(["asc", "desc"])
         .optional()
-        .describe("Sort direction"),
+        .describe(
+          "Optional. Allowed values: asc or desc. Omit to use default desc."
+        ),
     },
     async (args) => {
       try {
@@ -85,36 +101,50 @@ export function registerProjectTools(
       projectId: z
         .string()
         .optional()
-        .describe("Single project ID"),
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never send project name/userId/template strings. Omit if project is not specified."
+        ),
       dueFrom: z
         .string()
         .optional()
-        .describe("Due start date"),
+        .describe(
+          "Optional. Lower due-date bound in YYYY-MM-DD format. Omit when no start bound is requested. Do not send natural-language dates."
+        ),
       dueTo: z
         .string()
         .optional()
-        .describe("Due end date"),
+        .describe(
+          "Optional. Upper due-date bound in YYYY-MM-DD format. Omit when no end bound is requested. Do not send natural-language dates."
+        ),
       includeOverdue: z
         .boolean()
         .optional()
-        .describe("Include overdue items"),
+        .describe(
+          "Optional. true includes overdue obligations, false excludes them. Omit to use backend default (true)."
+        ),
       page: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Page number"),
+        .describe(
+          "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
+        ),
       pageSize: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Results per page"),
+        .describe(
+          "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
+        ),
       sortDirection: z
         .enum(["asc", "desc"])
         .optional()
-        .describe("Sort direction"),
+        .describe(
+          "Optional. Allowed values: asc or desc. Omit to use default desc."
+        ),
     },
     async (args) => {
       try {
@@ -134,13 +164,17 @@ export function registerProjectTools(
       projectId: z
         .string()
         .optional()
-        .describe("Single project ID"),
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never send project name/userId/template strings. Omit if project is not specified."
+        ),
       activityDays: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Recent activity days"),
+        .describe(
+          "Optional. Positive integer window in days for status activity computation. Omit to use backend default behavior (typically 30)."
+        ),
     },
     async (args) => {
       try {

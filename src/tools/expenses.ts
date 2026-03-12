@@ -22,19 +22,27 @@ export function registerExpenseTools(
       projectId: z
         .string()
         .optional()
-        .describe("Single project ID"),
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
+        ),
       from: z
         .string()
         .optional()
-        .describe("Start date YYYY-MM-DD"),
+        .describe(
+          "Optional. Start date in YYYY-MM-DD format. Omit when user did not request a start date. Do not send natural-language dates."
+        ),
       to: z
         .string()
         .optional()
-        .describe("End date YYYY-MM-DD"),
+        .describe(
+          "Optional. End date in YYYY-MM-DD format. Omit when user did not request an end date. Do not send natural-language dates."
+        ),
       comparePreviousPeriod: z
         .boolean()
         .optional()
-        .describe("Compare previous period"),
+        .describe(
+          "Optional. true includes previous-period comparison metrics, false disables comparison. Omit when comparison is not requested."
+        ),
     },
     async (args) => {
       try {
@@ -54,30 +62,42 @@ export function registerExpenseTools(
       projectId: z
         .string()
         .optional()
-        .describe("Single project ID"),
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
+        ),
       from: z
         .string()
         .optional()
-        .describe("Start date YYYY-MM-DD"),
+        .describe(
+          "Optional. Start date in YYYY-MM-DD format. Omit when user did not request a start date. Do not send natural-language dates."
+        ),
       to: z
         .string()
         .optional()
-        .describe("End date YYYY-MM-DD"),
+        .describe(
+          "Optional. End date in YYYY-MM-DD format. Omit when user did not request an end date. Do not send natural-language dates."
+        ),
       top: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Maximum categories returned"),
+        .describe(
+          "Optional. Maximum categories to return (integer 1..100). Omit to use backend default (10)."
+        ),
       includeOthers: z
         .boolean()
         .optional()
-        .describe("Group remaining categories"),
+        .describe(
+          "Optional. true groups remaining categories into Others. Omit when user did not request an Others bucket."
+        ),
       includeTrend: z
         .boolean()
         .optional()
-        .describe("Include category trend delta"),
+        .describe(
+          "Optional. true includes trend delta versus previous period. Omit when trend comparison is not requested."
+        ),
     },
     async (args) => {
       try {
@@ -97,22 +117,30 @@ export function registerExpenseTools(
       from: z
         .string()
         .optional()
-        .describe("Start date YYYY-MM-DD"),
+        .describe(
+          "Optional. Start date in YYYY-MM-DD format. Omit when user did not request a start date. Do not send natural-language dates."
+        ),
       to: z
         .string()
         .optional()
-        .describe("End date YYYY-MM-DD"),
+        .describe(
+          "Optional. End date in YYYY-MM-DD format. Omit when user did not request an end date. Do not send natural-language dates."
+        ),
       top: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Maximum projects returned"),
+        .describe(
+          "Optional. Maximum projects to return (integer 1..100). Omit to use backend default (10)."
+        ),
       includeBudgetContext: z
         .boolean()
         .optional()
-        .describe("Include budget usage"),
+        .describe(
+          "Optional. true includes budget usage context per project. Omit to use backend default (typically true)."
+        ),
     },
     async (args) => {
       try {
@@ -132,23 +160,33 @@ export function registerExpenseTools(
       projectId: z
         .string()
         .optional()
-        .describe("Single project ID"),
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
+        ),
       from: z
         .string()
         .optional()
-        .describe("Start date or default"),
+        .describe(
+          "Optional. Start date in YYYY-MM-DD format. Omit to let backend apply default range for the selected granularity. Do not send natural-language dates."
+        ),
       to: z
         .string()
         .optional()
-        .describe("End date or default"),
+        .describe(
+          "Optional. End date in YYYY-MM-DD format. Omit to let backend apply default range for the selected granularity. Do not send natural-language dates."
+        ),
       granularity: z
         .enum(["day", "week", "month"])
         .optional()
-        .describe("Bucket size"),
+        .describe(
+          "Optional. Allowed values: day, week, month. Omit to use default month."
+        ),
       categoryId: z
         .string()
         .optional()
-        .describe("Expense category ID"),
+        .describe(
+          "Optional. Expense category UUID from trusted data context. Never invent IDs or use category name/template placeholders. Omit when category is not specified."
+        ),
     },
     async (args) => {
       try {

@@ -22,36 +22,50 @@ export function registerPaymentTools(
       projectId: z
         .string()
         .optional()
-        .describe("Single project ID"),
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
+        ),
       dueBefore: z
         .string()
         .optional()
-        .describe("Due before date"),
+        .describe(
+          "Optional. Upper due-date bound in YYYY-MM-DD format. Omit when not requested. Do not send natural-language dates."
+        ),
       dueAfter: z
         .string()
         .optional()
-        .describe("Due after date"),
+        .describe(
+          "Optional. Lower due-date bound in YYYY-MM-DD format. Omit when not requested. Do not send natural-language dates."
+        ),
       minRemainingAmount: z
         .number()
         .optional()
-        .describe("Minimum remaining balance"),
+        .describe(
+          "Optional. Minimum remaining balance threshold (number). Omit if the user did not ask for an amount floor."
+        ),
       page: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Page number"),
+        .describe(
+          "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
+        ),
       pageSize: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Results per page"),
+        .describe(
+          "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
+        ),
       sortDirection: z
         .enum(["asc", "desc"])
         .optional()
-        .describe("Sort direction"),
+        .describe(
+          "Optional. Allowed values: asc or desc. Omit to use default desc."
+        ),
     },
     async (args) => {
       try {
@@ -71,45 +85,68 @@ export function registerPaymentTools(
       projectId: z
         .string()
         .optional()
-        .describe("Single project ID"),
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
+        ),
       from: z
         .string()
         .optional()
-        .describe("Start income date"),
+        .describe(
+          "Optional. Start date filter in YYYY-MM-DD format. Omit when user did not request a start date. Do not send natural-language dates."
+        ),
       to: z
         .string()
         .optional()
-        .describe("End income date"),
+        .describe(
+          "Optional. End date filter in YYYY-MM-DD format. Omit when user did not request an end date. Do not send natural-language dates."
+        ),
       paymentMethodId: z
         .string()
         .optional()
-        .describe("Payment method ID"),
-      categoryId: z.string().optional().describe("Category ID"),
+        .describe(
+          "Optional. Payment method UUID from trusted data context. Never invent IDs or use labels/template expressions. Omit if method is unknown."
+        ),
+      categoryId: z
+        .string()
+        .optional()
+        .describe(
+          "Optional. Category UUID from trusted data context. Never invent IDs or use category name as ID. Omit if category is not explicitly provided."
+        ),
       minAmount: z
         .number()
         .optional()
-        .describe("Minimum payment amount"),
+        .describe(
+          "Optional. Minimum payment amount threshold (number). Omit if the user did not ask for an amount floor."
+        ),
       page: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Page number"),
+        .describe(
+          "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
+        ),
       pageSize: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Results per page"),
+        .describe(
+          "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
+        ),
       sortBy: z
         .enum(["title", "amount", "project"])
         .optional()
-        .describe("Sort field"),
+        .describe(
+          "Optional. Allowed values: title, amount, project. Omit to use backend fallback sort (incomeDate)."
+        ),
       sortDirection: z
         .enum(["asc", "desc"])
         .optional()
-        .describe("Sort direction"),
+        .describe(
+          "Optional. Allowed values: asc or desc. Omit to use default desc."
+        ),
     },
     async (args) => {
       try {
@@ -129,34 +166,46 @@ export function registerPaymentTools(
       projectId: z
         .string()
         .optional()
-        .describe("Single project ID"),
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
+        ),
       overdueDaysMin: z
         .number()
         .int()
         .min(0)
         .optional()
-        .describe("Minimum overdue days"),
+        .describe(
+          "Optional. Minimum overdue days threshold (integer >= 0). Omit to use backend default (0)."
+        ),
       minRemainingAmount: z
         .number()
         .optional()
-        .describe("Minimum remaining balance"),
+        .describe(
+          "Optional. Minimum remaining balance threshold (number). Omit if the user did not ask for an amount floor."
+        ),
       page: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Page number"),
+        .describe(
+          "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
+        ),
       pageSize: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Results per page"),
+        .describe(
+          "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
+        ),
       sortDirection: z
         .enum(["asc", "desc"])
         .optional()
-        .describe("Sort direction"),
+        .describe(
+          "Optional. Allowed values: asc or desc. Omit to use default desc."
+        ),
     },
     async (args) => {
       try {
@@ -176,26 +225,36 @@ export function registerPaymentTools(
       projectId: z
         .string()
         .optional()
-        .describe("Single project ID"),
+        .describe(
+          "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
+        ),
       from: z
         .string()
         .optional()
-        .describe("Start date YYYY-MM-DD"),
+        .describe(
+          "Optional. Start date in YYYY-MM-DD format. Omit when user did not request a lower bound. Do not send natural-language dates."
+        ),
       to: z
         .string()
         .optional()
-        .describe("End date YYYY-MM-DD"),
+        .describe(
+          "Optional. End date in YYYY-MM-DD format. Omit when user did not request an upper bound. Do not send natural-language dates."
+        ),
       direction: z
         .enum(["expense", "income", "both"])
         .optional()
-        .describe("Transaction direction"),
+        .describe(
+          "Optional. Allowed values: expense, income, both. Omit to use default both."
+        ),
       top: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Maximum methods returned"),
+        .describe(
+          "Optional. Maximum number of methods to return (integer 1..100). Omit to use backend default (10)."
+        ),
     },
     async (args) => {
       try {
