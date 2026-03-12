@@ -15,30 +15,28 @@ export function registerIncomeTools(
   // ── By Period ──────────────────────────────────────────────────────────────
   server.tool(
     "get_income_by_period",
-    "Get a time-series of income aggregated by day, week, or month. Returns totalIncome, incomeCount, optional period-over-period delta, and an array of data points (periodStart, periodLabel, totalIncome). Defaults: day → last 30 days, week → last 12 weeks, month → last 12 months.",
+    "Get income time series with optional comparison.",
     {
       projectId: z
         .string()
         .optional()
-        .describe("Filter results to a single project ID"),
+        .describe("Single project ID"),
       from: z
         .string()
         .optional()
-        .describe("Start of date range (YYYY-MM-DD); uses default if omitted"),
+        .describe("Start date or default"),
       to: z
         .string()
         .optional()
-        .describe("End of date range (YYYY-MM-DD); uses default if omitted"),
+        .describe("End date or default"),
       granularity: z
         .enum(["day", "week", "month"])
         .optional()
-        .describe("Time bucket size (default: month)"),
+        .describe("Bucket size"),
       comparePreviousPeriod: z
         .boolean()
         .optional()
-        .describe(
-          "Include comparison against the same-length previous period (default: false)"
-        ),
+        .describe("Compare previous period"),
     },
     async (args) => {
       try {
@@ -53,23 +51,23 @@ export function registerIncomeTools(
   // ── By Project ─────────────────────────────────────────────────────────────
   server.tool(
     "get_income_by_project",
-    "Get income distribution broken down by project, showing totalIncome, currency, and income transaction count. Use to compare revenue across projects.",
+    "Get income by project.",
     {
       from: z
         .string()
         .optional()
-        .describe("Start of date range (YYYY-MM-DD)"),
+        .describe("Start date YYYY-MM-DD"),
       to: z
         .string()
         .optional()
-        .describe("End of date range (YYYY-MM-DD)"),
+        .describe("End date YYYY-MM-DD"),
       top: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Maximum number of projects to return (default: 10)"),
+        .describe("Maximum projects returned"),
     },
     async (args) => {
       try {

@@ -16,20 +16,20 @@ export function registerSummaryTools(
   // ── Financial Health ───────────────────────────────────────────────────────
   server.tool(
     "get_financial_health",
-    "Get an overall financial health score (0\u2013100) combining net balance, overdue obligations, budget pressure, and income vs spending. Also returns totalIncome, totalSpent, netBalance, burnRatePerDay, budgetRiskProjects, overdueObligationsCount, and keySignals. Use as the primary entry point for financial health questions.",
+    "Get overall financial health and key signals.",
     {
       projectId: z
         .string()
         .optional()
-        .describe("Scope the score to a single project ID"),
+        .describe("Single project ID"),
       from: z
         .string()
         .optional()
-        .describe("Start of evaluation period (YYYY-MM-DD)"),
+        .describe("Evaluation start date"),
       to: z
         .string()
         .optional()
-        .describe("End of evaluation period (YYYY-MM-DD)"),
+        .describe("Evaluation end date"),
     },
     async (args) => {
       try {
@@ -47,18 +47,16 @@ export function registerSummaryTools(
   // ── Monthly Overview ───────────────────────────────────────────────────────
   server.tool(
     "get_monthly_overview",
-    "Get a consolidated monthly summary including KPIs (totalSpent, totalIncome, netBalance, transaction counts), top expense categories, payment method split, per-project health, and active alerts. Use for month-level reporting or when the user asks about a specific month.",
+    "Get monthly financial overview and alerts.",
     {
       month: z
         .string()
         .optional()
-        .describe(
-          "Month to summarize in YYYY-MM format (default: current month)"
-        ),
+        .describe("Month YYYY-MM"),
       projectId: z
         .string()
         .optional()
-        .describe("Scope the overview to a single project ID"),
+        .describe("Single project ID"),
     },
     async (args) => {
       try {
@@ -76,23 +74,23 @@ export function registerSummaryTools(
   // ── Alerts ─────────────────────────────────────────────────────────────────
   server.tool(
     "get_alerts",
-    "Get active financial alerts ordered by priority (highest first). Alert codes include BUDGET_OVER_80, OVERDUE_OBLIGATIONS, and NEGATIVE_NET. Use to surface warnings and actionable issues to the user.",
+    "Get active financial alerts by priority.",
     {
       month: z
         .string()
         .optional()
-        .describe("Month to evaluate in YYYY-MM format (default: current month)"),
+        .describe("Month YYYY-MM"),
       projectId: z
         .string()
         .optional()
-        .describe("Scope alerts to a single project ID"),
+        .describe("Single project ID"),
       minPriority: z
         .number()
         .int()
         .min(0)
         .max(100)
         .optional()
-        .describe("Minimum priority threshold to include (0\u2013100)"),
+        .describe("Minimum alert priority"),
     },
     async (args) => {
       try {

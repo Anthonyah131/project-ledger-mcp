@@ -16,35 +16,35 @@ export function registerProjectTools(
   // ── Portfolio ──────────────────────────────────────────────────────────────
   server.tool(
     "get_project_portfolio",
-    "Get a paginated portfolio view of projects including status, financial metrics (totalSpent, totalIncome, netBalance), progress, recent activity, upcoming deadlines, and budget context. Use to answer questions about project health and financial standing.",
+    "Get portfolio health and financial metrics.",
     {
       projectId: z
         .string()
         .optional()
-        .describe("Filter results to a single project ID"),
+        .describe("Single project ID"),
       status: z
         .enum(["active", "completed", "at_risk", "inactive"])
         .optional()
-        .describe("Filter by project status"),
+        .describe("Project status"),
       activityDays: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Days window for recent activity (default: 30)"),
+        .describe("Recent activity days"),
       page: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Page number, 1-based (default: 1)"),
+        .describe("Page number"),
       pageSize: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Items per page (default: 20, max: 100)"),
+        .describe("Results per page"),
       sortBy: z
         .enum([
           "name",
@@ -55,11 +55,11 @@ export function registerProjectTools(
           "progress",
         ])
         .optional()
-        .describe("Field to sort by (default: lastActivityAtUtc)"),
+        .describe("Sort field"),
       sortDirection: z
         .enum(["asc", "desc"])
         .optional()
-        .describe("Sort direction (default: desc)"),
+        .describe("Sort direction"),
     },
     async (args) => {
       try {
@@ -74,41 +74,41 @@ export function registerProjectTools(
   // ── Deadlines ──────────────────────────────────────────────────────────────
   server.tool(
     "get_project_deadlines",
-    "Get a paginated list of obligation deadlines grouped by project. Only returns obligations with a remaining balance greater than zero. Ordered by dueDate.",
+    "Get project deadlines by due date.",
     {
       projectId: z
         .string()
         .optional()
-        .describe("Filter results to a single project ID"),
+        .describe("Single project ID"),
       dueFrom: z
         .string()
         .optional()
-        .describe("Start of due-date range (YYYY-MM-DD)"),
+        .describe("Due start date"),
       dueTo: z
         .string()
         .optional()
-        .describe("End of due-date range (YYYY-MM-DD)"),
+        .describe("Due end date"),
       includeOverdue: z
         .boolean()
         .optional()
-        .describe("Include already-overdue obligations (default: true)"),
+        .describe("Include overdue items"),
       page: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Page number, 1-based (default: 1)"),
+        .describe("Page number"),
       pageSize: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Items per page (default: 20, max: 100)"),
+        .describe("Results per page"),
       sortDirection: z
         .enum(["asc", "desc"])
         .optional()
-        .describe("Sort direction for dueDate (default: desc)"),
+        .describe("Sort direction"),
     },
     async (args) => {
       try {
@@ -123,18 +123,18 @@ export function registerProjectTools(
   // ── Active vs Completed ────────────────────────────────────────────────────
   server.tool(
     "get_project_activity_split",
-    "Get a count breakdown of projects by status (activeCount, completedCount, atRiskCount, inactiveCount) plus a per-project status list. Useful for high-level portfolio health overview.",
+    "Get project counts by status.",
     {
       projectId: z
         .string()
         .optional()
-        .describe("Filter results to a single project ID"),
+        .describe("Single project ID"),
       activityDays: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Days window for recent activity (default: 30)"),
+        .describe("Recent activity days"),
     },
     async (args) => {
       try {

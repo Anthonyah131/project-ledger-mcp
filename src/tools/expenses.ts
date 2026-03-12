@@ -17,26 +17,24 @@ export function registerExpenseTools(
   // ── Totals ─────────────────────────────────────────────────────────────────
   server.tool(
     "get_expense_totals",
-    "Get total spending for a period: totalSpent, transactionCount, and averageExpense. Optionally compare against the equivalent previous period to get deltaAmount and deltaPercentage.",
+    "Get spending totals and optional period comparison.",
     {
       projectId: z
         .string()
         .optional()
-        .describe("Filter results to a single project ID"),
+        .describe("Single project ID"),
       from: z
         .string()
         .optional()
-        .describe("Start of date range (YYYY-MM-DD)"),
+        .describe("Start date YYYY-MM-DD"),
       to: z
         .string()
         .optional()
-        .describe("End of date range (YYYY-MM-DD)"),
+        .describe("End date YYYY-MM-DD"),
       comparePreviousPeriod: z
         .boolean()
         .optional()
-        .describe(
-          "Include comparison against the same-length previous period (default: false)"
-        ),
+        .describe("Compare previous period"),
     },
     async (args) => {
       try {
@@ -51,37 +49,35 @@ export function registerExpenseTools(
   // ── By Category ────────────────────────────────────────────────────────────
   server.tool(
     "get_expenses_by_category",
-    "Get spending distribution broken down by expense category, showing amount, count, and percentage per category. Optionally includes an 'Others' bucket and trend delta vs the previous period.",
+    "Get spending by category with optional trends.",
     {
       projectId: z
         .string()
         .optional()
-        .describe("Filter results to a single project ID"),
+        .describe("Single project ID"),
       from: z
         .string()
         .optional()
-        .describe("Start of date range (YYYY-MM-DD)"),
+        .describe("Start date YYYY-MM-DD"),
       to: z
         .string()
         .optional()
-        .describe("End of date range (YYYY-MM-DD)"),
+        .describe("End date YYYY-MM-DD"),
       top: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Maximum number of categories to return (default: 10)"),
+        .describe("Maximum categories returned"),
       includeOthers: z
         .boolean()
         .optional()
-        .describe("Aggregate remaining categories into an 'Others' bucket"),
+        .describe("Group remaining categories"),
       includeTrend: z
         .boolean()
         .optional()
-        .describe(
-          "Calculate trendDelta for each category vs the previous period"
-        ),
+        .describe("Include category trend delta"),
     },
     async (args) => {
       try {
@@ -96,29 +92,27 @@ export function registerExpenseTools(
   // ── By Project ─────────────────────────────────────────────────────────────
   server.tool(
     "get_expenses_by_project",
-    "Get spending distribution broken down by project, showing totalSpent, expenseCount, and optional budget context (budget amount and budgetUsedPercentage).",
+    "Get spending by project with budget context.",
     {
       from: z
         .string()
         .optional()
-        .describe("Start of date range (YYYY-MM-DD)"),
+        .describe("Start date YYYY-MM-DD"),
       to: z
         .string()
         .optional()
-        .describe("End of date range (YYYY-MM-DD)"),
+        .describe("End date YYYY-MM-DD"),
       top: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Maximum number of projects to return (default: 10)"),
+        .describe("Maximum projects returned"),
       includeBudgetContext: z
         .boolean()
         .optional()
-        .describe(
-          "Include active budget amount and usage percentage (default: true)"
-        ),
+        .describe("Include budget usage"),
     },
     async (args) => {
       try {
@@ -133,28 +127,28 @@ export function registerExpenseTools(
   // ── Trends ─────────────────────────────────────────────────────────────────
   server.tool(
     "get_expense_trends",
-    "Get a time-series of expense spending aggregated by day, week, or month. Returns the effective date range and an array of data points (periodStart, periodLabel, totalSpent, expenseCount). Defaults: day → last 30 days, week → last 12 weeks, month → last 12 months.",
+    "Get expense time series by period.",
     {
       projectId: z
         .string()
         .optional()
-        .describe("Filter results to a single project ID"),
+        .describe("Single project ID"),
       from: z
         .string()
         .optional()
-        .describe("Start of date range (YYYY-MM-DD); uses default if omitted"),
+        .describe("Start date or default"),
       to: z
         .string()
         .optional()
-        .describe("End of date range (YYYY-MM-DD); uses default if omitted"),
+        .describe("End date or default"),
       granularity: z
         .enum(["day", "week", "month"])
         .optional()
-        .describe("Time bucket size (default: month)"),
+        .describe("Bucket size"),
       categoryId: z
         .string()
         .optional()
-        .describe("Filter to a specific expense category ID"),
+        .describe("Expense category ID"),
     },
     async (args) => {
       try {

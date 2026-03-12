@@ -15,42 +15,40 @@ export function registerObligationTools(
   // ── Upcoming ───────────────────────────────────────────────────────────────
   server.tool(
     "get_upcoming_obligations",
-    "Get a paginated list of obligations due within the next N days that still have a remaining balance. Use to answer questions about what payments are coming up soon.",
+    "Get upcoming obligations with remaining balances.",
     {
       projectId: z
         .string()
         .optional()
-        .describe("Filter results to a single project ID"),
+        .describe("Single project ID"),
       dueWithinDays: z
         .number()
         .int()
         .min(1)
         .max(3650)
         .optional()
-        .describe(
-          "How many days ahead to look for due obligations (default: 30)"
-        ),
+        .describe("Days ahead to check"),
       minRemainingAmount: z
         .number()
         .optional()
-        .describe("Minimum remaining balance to include"),
+        .describe("Minimum remaining balance"),
       page: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Page number, 1-based (default: 1)"),
+        .describe("Page number"),
       pageSize: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Items per page (default: 20, max: 100)"),
+        .describe("Results per page"),
       sortDirection: z
         .enum(["asc", "desc"])
         .optional()
-        .describe("Sort direction (default: desc)"),
+        .describe("Sort direction"),
     },
     async (args) => {
       try {
@@ -65,33 +63,33 @@ export function registerObligationTools(
   // ── Unpaid ─────────────────────────────────────────────────────────────────
   server.tool(
     "get_unpaid_obligations",
-    "Get a paginated list of unpaid or partially paid obligations that still have a remaining balance. Optionally filter by status (open, partially_paid, overdue).",
+    "Get unpaid obligations with remaining balances.",
     {
       projectId: z
         .string()
         .optional()
-        .describe("Filter results to a single project ID"),
+        .describe("Single project ID"),
       status: z
         .enum(["open", "partially_paid", "overdue"])
         .optional()
-        .describe("Filter by obligation status"),
+        .describe("Obligation status"),
       page: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Page number, 1-based (default: 1)"),
+        .describe("Page number"),
       pageSize: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Items per page (default: 20, max: 100)"),
+        .describe("Results per page"),
       sortDirection: z
         .enum(["asc", "desc"])
         .optional()
-        .describe("Sort direction (default: desc)"),
+        .describe("Sort direction"),
     },
     async (args) => {
       try {

@@ -17,41 +17,41 @@ export function registerPaymentTools(
   // ── Pending ────────────────────────────────────────────────────────────────
   server.tool(
     "get_pending_payments",
-    "Get a paginated list of payment obligations that still have a remaining balance (remainingAmount > 0). Use to answer questions about what payments are still due.",
+    "Get pending payments with remaining balances.",
     {
       projectId: z
         .string()
         .optional()
-        .describe("Filter results to a single project ID"),
+        .describe("Single project ID"),
       dueBefore: z
         .string()
         .optional()
-        .describe("Only include obligations due before this date (YYYY-MM-DD)"),
+        .describe("Due before date"),
       dueAfter: z
         .string()
         .optional()
-        .describe("Only include obligations due after this date (YYYY-MM-DD)"),
+        .describe("Due after date"),
       minRemainingAmount: z
         .number()
         .optional()
-        .describe("Minimum remaining balance to include"),
+        .describe("Minimum remaining balance"),
       page: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Page number, 1-based (default: 1)"),
+        .describe("Page number"),
       pageSize: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Items per page (default: 20, max: 100)"),
+        .describe("Results per page"),
       sortDirection: z
         .enum(["asc", "desc"])
         .optional()
-        .describe("Sort direction (default: desc)"),
+        .describe("Sort direction"),
     },
     async (args) => {
       try {
@@ -66,50 +66,50 @@ export function registerPaymentTools(
   // ── Received ───────────────────────────────────────────────────────────────
   server.tool(
     "get_received_payments",
-    "Get a paginated list of income payments received. Each item includes the original amount, converted amount, payment method, category, and project. Use to answer questions about cash inflows.",
+    "Get received income payments.",
     {
       projectId: z
         .string()
         .optional()
-        .describe("Filter results to a single project ID"),
+        .describe("Single project ID"),
       from: z
         .string()
         .optional()
-        .describe("Start of income-date range (YYYY-MM-DD)"),
+        .describe("Start income date"),
       to: z
         .string()
         .optional()
-        .describe("End of income-date range (YYYY-MM-DD)"),
+        .describe("End income date"),
       paymentMethodId: z
         .string()
         .optional()
-        .describe("Filter by payment method ID"),
-      categoryId: z.string().optional().describe("Filter by category ID"),
+        .describe("Payment method ID"),
+      categoryId: z.string().optional().describe("Category ID"),
       minAmount: z
         .number()
         .optional()
-        .describe("Minimum payment amount to include"),
+        .describe("Minimum payment amount"),
       page: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Page number, 1-based (default: 1)"),
+        .describe("Page number"),
       pageSize: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Items per page (default: 20, max: 100)"),
+        .describe("Results per page"),
       sortBy: z
         .enum(["title", "amount", "project"])
         .optional()
-        .describe("Field to sort by (default: incomeDate)"),
+        .describe("Sort field"),
       sortDirection: z
         .enum(["asc", "desc"])
         .optional()
-        .describe("Sort direction (default: desc)"),
+        .describe("Sort direction"),
     },
     async (args) => {
       try {
@@ -124,41 +124,39 @@ export function registerPaymentTools(
   // ── Overdue ────────────────────────────────────────────────────────────────
   server.tool(
     "get_overdue_payments",
-    "Get a paginated list of overdue payment obligations that still have a remaining balance. Use to answer questions about late or missed payments.",
+    "Get overdue payments with remaining balances.",
     {
       projectId: z
         .string()
         .optional()
-        .describe("Filter results to a single project ID"),
+        .describe("Single project ID"),
       overdueDaysMin: z
         .number()
         .int()
         .min(0)
         .optional()
-        .describe(
-          "Minimum number of days past the due date to include (default: 0)"
-        ),
+        .describe("Minimum overdue days"),
       minRemainingAmount: z
         .number()
         .optional()
-        .describe("Minimum remaining balance to include"),
+        .describe("Minimum remaining balance"),
       page: z
         .number()
         .int()
         .positive()
         .optional()
-        .describe("Page number, 1-based (default: 1)"),
+        .describe("Page number"),
       pageSize: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Items per page (default: 20, max: 100)"),
+        .describe("Results per page"),
       sortDirection: z
         .enum(["asc", "desc"])
         .optional()
-        .describe("Sort direction (default: desc)"),
+        .describe("Sort direction"),
     },
     async (args) => {
       try {
@@ -173,33 +171,31 @@ export function registerPaymentTools(
   // ── By Method ──────────────────────────────────────────────────────────────
   server.tool(
     "get_payments_by_method",
-    "Get payment usage broken down by payment method, showing totalOutgoing, totalIncoming, netFlow, transaction counts, and usagePercentage. Use to analyze which payment methods are most used.",
+    "Get payment totals by method.",
     {
       projectId: z
         .string()
         .optional()
-        .describe("Filter results to a single project ID"),
+        .describe("Single project ID"),
       from: z
         .string()
         .optional()
-        .describe("Start of date range (YYYY-MM-DD)"),
+        .describe("Start date YYYY-MM-DD"),
       to: z
         .string()
         .optional()
-        .describe("End of date range (YYYY-MM-DD)"),
+        .describe("End date YYYY-MM-DD"),
       direction: z
         .enum(["expense", "income", "both"])
         .optional()
-        .describe(
-          "Which transaction direction to include (default: both)"
-        ),
+        .describe("Transaction direction"),
       top: z
         .number()
         .int()
         .min(1)
         .max(100)
         .optional()
-        .describe("Maximum number of payment methods to return (default: 10)"),
+        .describe("Maximum methods returned"),
     },
     async (args) => {
       try {

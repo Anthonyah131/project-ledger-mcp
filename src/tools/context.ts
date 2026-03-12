@@ -12,7 +12,7 @@ export function registerContextTools(
 ): void {
   server.tool(
     "get_context",
-    "Get the current user context: userId, default currency, plan permissions/limits, and the list of visible projects (projectId, projectName, currencyCode, userRole). Call this first at session start or when context changes before making other queries.",
+    "Get user context and visible projects.",
     {},
     async () => {
       try {
