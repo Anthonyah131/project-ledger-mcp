@@ -1,6 +1,11 @@
 import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { toolOk, toolFail } from "../apiClient.js";
+import {
+  coerceOptionalLowercaseString,
+  coerceOptionalNumber,
+  coerceOptionalString,
+} from "./schema.js";
 import type { ServerContext } from "../server.js";
 
 /**
@@ -18,46 +23,44 @@ export function registerObligationTools(
     "Get upcoming obligations with remaining balances.",
     {
       projectId: z
-        .string()
-        .optional()
+        .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
         ),
       dueWithinDays: z
-        .number()
-        .int()
-        .min(1)
-        .max(3650)
-        .optional()
+        .preprocess(
+          coerceOptionalNumber,
+          z.number().int().min(1).max(3650).optional()
+        )
         .describe(
           "Optional. Days-ahead window (integer 1..3650). Omit to use backend default (30)."
         ),
       minRemainingAmount: z
-        .number()
-        .optional()
+        .preprocess(coerceOptionalNumber, z.number().optional())
         .describe(
           "Optional. Minimum remaining balance threshold (number). Omit if the user did not ask for an amount floor."
         ),
       page: z
-        .number()
-        .int()
-        .positive()
-        .optional()
+        .preprocess(
+          coerceOptionalNumber,
+          z.number().int().positive().optional()
+        )
         .describe(
           "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
         ),
       pageSize: z
-        .number()
-        .int()
-        .min(1)
-        .max(100)
-        .optional()
+        .preprocess(
+          coerceOptionalNumber,
+          z.number().int().min(1).max(100).optional()
+        )
         .describe(
           "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
         ),
       sortDirection: z
-        .enum(["asc", "desc"])
-        .optional()
+        .preprocess(
+          coerceOptionalLowercaseString,
+          z.enum(["asc", "desc"]).optional()
+        )
         .describe(
           "Optional. Allowed values: asc or desc. Omit to use default desc."
         ),
@@ -78,37 +81,39 @@ export function registerObligationTools(
     "Get unpaid obligations with remaining balances.",
     {
       projectId: z
-        .string()
-        .optional()
+        .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
         ),
       status: z
-        .enum(["open", "partially_paid", "overdue"])
-        .optional()
+        .preprocess(
+          coerceOptionalLowercaseString,
+          z.enum(["open", "partially_paid", "overdue"]).optional()
+        )
         .describe(
           "Optional. Allowed values: open, partially_paid, overdue. Omit when user did not request a status filter."
         ),
       page: z
-        .number()
-        .int()
-        .positive()
-        .optional()
+        .preprocess(
+          coerceOptionalNumber,
+          z.number().int().positive().optional()
+        )
         .describe(
           "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
         ),
       pageSize: z
-        .number()
-        .int()
-        .min(1)
-        .max(100)
-        .optional()
+        .preprocess(
+          coerceOptionalNumber,
+          z.number().int().min(1).max(100).optional()
+        )
         .describe(
           "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
         ),
       sortDirection: z
-        .enum(["asc", "desc"])
-        .optional()
+        .preprocess(
+          coerceOptionalLowercaseString,
+          z.enum(["asc", "desc"]).optional()
+        )
         .describe(
           "Optional. Allowed values: asc or desc. Omit to use default desc."
         ),

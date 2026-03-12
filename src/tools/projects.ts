@@ -1,6 +1,12 @@
 import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { toolOk, toolFail } from "../apiClient.js";
+import {
+  coerceOptionalBoolean,
+  coerceOptionalLowercaseString,
+  coerceOptionalNumber,
+  coerceOptionalString,
+} from "./schema.js";
 import type { ServerContext } from "../server.js";
 
 /**
@@ -19,66 +25,72 @@ export function registerProjectTools(
     "Get portfolio health and financial metrics.",
     {
       projectId: z
-        .string()
-        .optional()
+        .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if the user did not specify a project."
         ),
       status: z
-        .enum(["active", "completed", "at_risk", "inactive"])
-        .optional()
+        .preprocess(
+          coerceOptionalLowercaseString,
+          z.enum(["active", "completed", "at_risk", "inactive"]).optional()
+        )
         .describe(
           "Optional. Allowed values: active, completed, at_risk, inactive. Omit when the user did not ask to filter by status."
         ),
       activityDays: z
-        .number()
-        .int()
-        .positive()
-        .optional()
+        .preprocess(
+          coerceOptionalNumber,
+          z.number().int().positive().optional()
+        )
         .describe(
           "Optional. Positive integer window in days for recent activity analysis. Omit to use backend default behavior (typically 30)."
         ),
       dueInDays: z
-        .number()
-        .int()
-        .positive()
-        .optional()
+        .preprocess(
+          coerceOptionalNumber,
+          z.number().int().positive().optional()
+        )
         .describe(
           "Optional. Positive integer window in days for upcoming deadlines context. Omit to use backend default behavior (typically 30)."
         ),
       page: z
-        .number()
-        .int()
-        .positive()
-        .optional()
+        .preprocess(
+          coerceOptionalNumber,
+          z.number().int().positive().optional()
+        )
         .describe(
           "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
         ),
       pageSize: z
-        .number()
-        .int()
-        .min(1)
-        .max(100)
-        .optional()
+        .preprocess(
+          coerceOptionalNumber,
+          z.number().int().min(1).max(100).optional()
+        )
         .describe(
           "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
         ),
       sortBy: z
-        .enum([
-          "name",
-          "status",
-          "totalSpent",
-          "totalIncome",
-          "netBalance",
-          "progress",
-        ])
-        .optional()
+        .preprocess(
+          coerceOptionalString,
+          z
+            .enum([
+              "name",
+              "status",
+              "totalSpent",
+              "totalIncome",
+              "netBalance",
+              "progress",
+            ])
+            .optional()
+        )
         .describe(
           "Optional. Allowed values: name, status, totalSpent, totalIncome, netBalance, progress. Omit to use backend fallback sort."
         ),
       sortDirection: z
-        .enum(["asc", "desc"])
-        .optional()
+        .preprocess(
+          coerceOptionalLowercaseString,
+          z.enum(["asc", "desc"]).optional()
+        )
         .describe(
           "Optional. Allowed values: asc or desc. Omit to use default desc."
         ),
@@ -99,49 +111,46 @@ export function registerProjectTools(
     "Get project deadlines by due date.",
     {
       projectId: z
-        .string()
-        .optional()
+        .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never send project name/userId/template strings. Omit if project is not specified."
         ),
       dueFrom: z
-        .string()
-        .optional()
+        .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Lower due-date bound in YYYY-MM-DD format. Omit when no start bound is requested. Do not send natural-language dates."
         ),
       dueTo: z
-        .string()
-        .optional()
+        .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Upper due-date bound in YYYY-MM-DD format. Omit when no end bound is requested. Do not send natural-language dates."
         ),
       includeOverdue: z
-        .boolean()
-        .optional()
+        .preprocess(coerceOptionalBoolean, z.boolean().optional())
         .describe(
           "Optional. true includes overdue obligations, false excludes them. Omit to use backend default (true)."
         ),
       page: z
-        .number()
-        .int()
-        .positive()
-        .optional()
+        .preprocess(
+          coerceOptionalNumber,
+          z.number().int().positive().optional()
+        )
         .describe(
           "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
         ),
       pageSize: z
-        .number()
-        .int()
-        .min(1)
-        .max(100)
-        .optional()
+        .preprocess(
+          coerceOptionalNumber,
+          z.number().int().min(1).max(100).optional()
+        )
         .describe(
           "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
         ),
       sortDirection: z
-        .enum(["asc", "desc"])
-        .optional()
+        .preprocess(
+          coerceOptionalLowercaseString,
+          z.enum(["asc", "desc"]).optional()
+        )
         .describe(
           "Optional. Allowed values: asc or desc. Omit to use default desc."
         ),
@@ -162,16 +171,15 @@ export function registerProjectTools(
     "Get project counts by status.",
     {
       projectId: z
-        .string()
-        .optional()
+        .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never send project name/userId/template strings. Omit if project is not specified."
         ),
       activityDays: z
-        .number()
-        .int()
-        .positive()
-        .optional()
+        .preprocess(
+          coerceOptionalNumber,
+          z.number().int().positive().optional()
+        )
         .describe(
           "Optional. Positive integer window in days for status activity computation. Omit to use backend default behavior (typically 30)."
         ),

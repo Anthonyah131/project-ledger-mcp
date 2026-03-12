@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { toolOk, toolFail } from "../apiClient.js";
+import {
+  coerceOptionalNumber,
+  coerceOptionalString,
+} from "./schema.js";
 import type { ServerContext } from "../server.js";
 
 /**
@@ -19,20 +23,17 @@ export function registerSummaryTools(
     "Get overall financial health and key signals.",
     {
       projectId: z
-        .string()
-        .optional()
+        .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
         ),
       from: z
-        .string()
-        .optional()
+        .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Evaluation start date in YYYY-MM-DD format. Omit when user did not request a start date. Do not send natural-language dates."
         ),
       to: z
-        .string()
-        .optional()
+        .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Evaluation end date in YYYY-MM-DD format. Omit when user did not request an end date. Do not send natural-language dates."
         ),
@@ -56,14 +57,12 @@ export function registerSummaryTools(
     "Get monthly financial overview and alerts.",
     {
       month: z
-        .string()
-        .optional()
+        .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Month in YYYY-MM format. Omit to use current month. Do not send natural-language values like this month or este mes."
         ),
       projectId: z
-        .string()
-        .optional()
+        .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
         ),
@@ -87,23 +86,20 @@ export function registerSummaryTools(
     "Get active financial alerts by priority.",
     {
       month: z
-        .string()
-        .optional()
+        .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Month in YYYY-MM format. Omit to use current month. Do not send natural-language values like this month or este mes."
         ),
       projectId: z
-        .string()
-        .optional()
+        .preprocess(coerceOptionalString, z.string().optional())
         .describe(
           "Optional. Project UUID from get_context visibleProjects[]. Never invent IDs and never use project name, userId, or template placeholders. Omit if user did not specify a project."
         ),
       minPriority: z
-        .number()
-        .int()
-        .min(0)
-        .max(100)
-        .optional()
+        .preprocess(
+          coerceOptionalNumber,
+          z.number().int().min(0).max(100).optional()
+        )
         .describe(
           "Optional. Minimum alert priority threshold (integer 0..100). Omit to use backend default (0)."
         ),
