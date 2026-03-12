@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { fetchMcpApi, toolOk, toolFail } from "../api-client.js";
+import { toolOk, toolFail } from "../apiClient.js";
 import type { ServerContext } from "../server.js";
 
 /**
@@ -42,11 +42,7 @@ export function registerIncomeTools(
     },
     async (args) => {
       try {
-        const data = await fetchMcpApi(
-          "/api/mcp/income/by-period",
-          context.token,
-          args
-        );
+        const data = await context.apiClient("/api/mcp/income/by-period", args);
         return toolOk(data);
       } catch (err) {
         return toolFail(err);
@@ -77,11 +73,7 @@ export function registerIncomeTools(
     },
     async (args) => {
       try {
-        const data = await fetchMcpApi(
-          "/api/mcp/income/by-project",
-          context.token,
-          args
-        );
+        const data = await context.apiClient("/api/mcp/income/by-project", args);
         return toolOk(data);
       } catch (err) {
         return toolFail(err);

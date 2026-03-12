@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { fetchMcpApi, toolOk, toolFail } from "../api-client.js";
+import { toolOk, toolFail } from "../apiClient.js";
 import type { ServerContext } from "../server.js";
 
 /**
@@ -55,11 +55,7 @@ export function registerPaymentTools(
     },
     async (args) => {
       try {
-        const data = await fetchMcpApi(
-          "/api/mcp/payments/pending",
-          context.token,
-          args
-        );
+        const data = await context.apiClient("/api/mcp/payments/pending", args);
         return toolOk(data);
       } catch (err) {
         return toolFail(err);
@@ -117,11 +113,7 @@ export function registerPaymentTools(
     },
     async (args) => {
       try {
-        const data = await fetchMcpApi(
-          "/api/mcp/payments/received",
-          context.token,
-          args
-        );
+        const data = await context.apiClient("/api/mcp/payments/received", args);
         return toolOk(data);
       } catch (err) {
         return toolFail(err);
@@ -170,11 +162,7 @@ export function registerPaymentTools(
     },
     async (args) => {
       try {
-        const data = await fetchMcpApi(
-          "/api/mcp/payments/overdue",
-          context.token,
-          args
-        );
+        const data = await context.apiClient("/api/mcp/payments/overdue", args);
         return toolOk(data);
       } catch (err) {
         return toolFail(err);
@@ -215,11 +203,7 @@ export function registerPaymentTools(
     },
     async (args) => {
       try {
-        const data = await fetchMcpApi(
-          "/api/mcp/payments/by-method",
-          context.token,
-          args
-        );
+        const data = await context.apiClient("/api/mcp/payments/by-method", args);
         return toolOk(data);
       } catch (err) {
         return toolFail(err);

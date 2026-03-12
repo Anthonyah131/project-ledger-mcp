@@ -1,14 +1,32 @@
 import type { Request } from "express";
+import { config } from "./config.js";
 
 /**
- * Extracts the Bearer token from the Authorization request header.
- * Returns null if the header is absent or malformed.
- * Token validation (signature, expiry) is intentionally left to the SaaS API.
+ * Per-request authentication values required by the downstream MCP API.
  */
-export function extractBearerToken(req: Request): string | null {
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith("Bearer ")) {
+export interface RequestAuthContext {
+  serviceToken: string;
+  userId: string;
+}
+
+/**
+ * Extracts the downstream auth context from the incoming request.
+ * The service token comes from env and the user id must be forwarded by the caller.
+ */
+export function extractRequestAuthContext(
+  req: Request
+): RequestAuthContext | null {
+  const headerValue = req.headers["x-user-id"];
+  const userId = Array.isArray(headerValue)
+    ? headerValue[0]?.trim()
+    : headerValue?.trim();
+
+  if (!userId) {
     return null;
   }
-  return authHeader.slice(7).trim() || null;
+
+  return {
+    serviceToken: config.mcpServiceToken,
+    userId,
+  };
 }

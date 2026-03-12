@@ -1,5 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { fetchMcpApi, toolOk, toolFail } from "../api-client.js";
+import { toolOk, toolFail } from "../apiClient.js";
 import type { ServerContext } from "../server.js";
 
 /**
@@ -16,7 +16,7 @@ export function registerContextTools(
     {},
     async () => {
       try {
-        const data = await fetchMcpApi("/api/mcp/context", context.token);
+        const data = await context.apiClient("/api/mcp/context");
         return toolOk(data);
       } catch (err) {
         return toolFail(err);

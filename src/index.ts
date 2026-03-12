@@ -1,8 +1,7 @@
 import express from "express";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { config } from "./config.js";
-import { createMcpServer } from "./server.js";
-import { extractBearerToken } from "./auth.js";
+import { createMcpServer, createServerContext } from "./server.js";
 
 const app = express();
 app.use(express.json());
@@ -15,13 +14,15 @@ app.get("/health", (_req, res) => {
 // ── MCP endpoint ─────────────────────────────────────────────────────────────
 // One transport + server instance per request — fully stateless, no sessions.
 app.post("/mcp", async (req, res) => {
-  const token = extractBearerToken(req);
-  if (!token) {
-    res.status(401).json({ error: "Missing or invalid Authorization header" });
+  const context = createServerContext(req);
+  if (!context) {
+    res
+      .status(400)
+      .json({ error: "Missing required X-User-Id header" });
     return;
   }
 
-  const server = createMcpServer({ token });
+  const server = createMcpServer(context);
   const transport = new StreamableHTTPServerTransport({
     sessionIdGenerator: undefined, // disable session management → stateless
   });

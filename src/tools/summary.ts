@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { fetchMcpApi, toolOk, toolFail } from "../api-client.js";
+import { toolOk, toolFail } from "../apiClient.js";
 import type { ServerContext } from "../server.js";
 
 /**
@@ -33,9 +33,8 @@ export function registerSummaryTools(
     },
     async (args) => {
       try {
-        const data = await fetchMcpApi(
+        const data = await context.apiClient(
           "/api/mcp/summary/financial-health",
-          context.token,
           args
         );
         return toolOk(data);
@@ -63,9 +62,8 @@ export function registerSummaryTools(
     },
     async (args) => {
       try {
-        const data = await fetchMcpApi(
+        const data = await context.apiClient(
           "/api/mcp/summary/monthly-overview",
-          context.token,
           args
         );
         return toolOk(data);
@@ -98,11 +96,7 @@ export function registerSummaryTools(
     },
     async (args) => {
       try {
-        const data = await fetchMcpApi(
-          "/api/mcp/summary/alerts",
-          context.token,
-          args
-        );
+        const data = await context.apiClient("/api/mcp/summary/alerts", args);
         return toolOk(data);
       } catch (err) {
         return toolFail(err);

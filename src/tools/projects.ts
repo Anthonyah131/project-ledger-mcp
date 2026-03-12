@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { fetchMcpApi, toolOk, toolFail } from "../api-client.js";
+import { toolOk, toolFail } from "../apiClient.js";
 import type { ServerContext } from "../server.js";
 
 /**
@@ -63,11 +63,7 @@ export function registerProjectTools(
     },
     async (args) => {
       try {
-        const data = await fetchMcpApi(
-          "/api/mcp/projects/portfolio",
-          context.token,
-          args
-        );
+        const data = await context.apiClient("/api/mcp/projects/portfolio", args);
         return toolOk(data);
       } catch (err) {
         return toolFail(err);
@@ -116,11 +112,7 @@ export function registerProjectTools(
     },
     async (args) => {
       try {
-        const data = await fetchMcpApi(
-          "/api/mcp/projects/deadlines",
-          context.token,
-          args
-        );
+        const data = await context.apiClient("/api/mcp/projects/deadlines", args);
         return toolOk(data);
       } catch (err) {
         return toolFail(err);
@@ -146,9 +138,8 @@ export function registerProjectTools(
     },
     async (args) => {
       try {
-        const data = await fetchMcpApi(
+        const data = await context.apiClient(
           "/api/mcp/projects/active-vs-completed",
-          context.token,
           args
         );
         return toolOk(data);

@@ -32,19 +32,21 @@ Implicaciones de diseño:
 
 - Base path: `/api/mcp`
 - Todos los endpoints son `GET`.
-- Requieren JWT Bearer válido.
+- Requieren un service token MCP válido.
+- Requieren el encabezado `X-User-Id` con el id real del usuario.
 - Requieren policy `Plan:CanUseApi`.
 
 Headers recomendados:
 
 ```http
-Authorization: Bearer <token>
+Authorization: Bearer <MCP_SERVICE_TOKEN>
+X-User-Id: <userId>
 Accept: application/json
 ```
 
 Notas importantes:
 
-- El `userId` se resuelve desde el JWT (`sub`), no se recibe por query/body.
+- El `userId` no se recibe por query/body; debe enviarse por encabezado `X-User-Id`.
 - Si se envía `projectId`, la API valida acceso del usuario al proyecto.
 
 ## 3. Convenciones Comunes
@@ -436,7 +438,8 @@ Respuesta:
 
 ```bash
 curl -X GET "https://<host>/api/mcp/context" \
-  -H "Authorization: Bearer <token>" \
+  -H "Authorization: Bearer <MCP_SERVICE_TOKEN>" \
+  -H "X-User-Id: <userId>" \
   -H "Accept: application/json"
 ```
 
@@ -444,7 +447,8 @@ curl -X GET "https://<host>/api/mcp/context" \
 
 ```bash
 curl -G "https://<host>/api/mcp/projects/portfolio" \
-  -H "Authorization: Bearer <token>" \
+  -H "Authorization: Bearer <MCP_SERVICE_TOKEN>" \
+  -H "X-User-Id: <userId>" \
   --data-urlencode "page=1" \
   --data-urlencode "pageSize=20" \
   --data-urlencode "status=active" \
@@ -456,7 +460,8 @@ curl -G "https://<host>/api/mcp/projects/portfolio" \
 
 ```bash
 curl -G "https://<host>/api/mcp/expenses/trends" \
-  -H "Authorization: Bearer <token>" \
+  -H "Authorization: Bearer <MCP_SERVICE_TOKEN>" \
+  -H "X-User-Id: <userId>" \
   --data-urlencode "granularity=month" \
   --data-urlencode "from=2025-01-01" \
   --data-urlencode "to=2025-12-31"
