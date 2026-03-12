@@ -40,7 +40,7 @@ export function registerProjectTools(
       activityDays: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().positive().optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Positive integer window in days for recent activity analysis. Omit to use backend default behavior (typically 30)."
@@ -48,7 +48,7 @@ export function registerProjectTools(
       dueInDays: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().positive().optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Positive integer window in days for upcoming deadlines context. Omit to use backend default behavior (typically 30)."
@@ -56,7 +56,7 @@ export function registerProjectTools(
       page: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().positive().optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
@@ -64,7 +64,7 @@ export function registerProjectTools(
       pageSize: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().min(1).max(100).optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
@@ -126,14 +126,17 @@ export function registerProjectTools(
           "Optional. Upper due-date bound in YYYY-MM-DD format. Omit when no end bound is requested. Do not send natural-language dates."
         ),
       includeOverdue: z
-        .preprocess(coerceOptionalBoolean, z.boolean().optional())
+        .preprocess(
+          coerceOptionalBoolean,
+          z.union([z.boolean(), z.string()]).optional()
+        )
         .describe(
           "Optional. true includes overdue obligations, false excludes them. Omit to use backend default (true)."
         ),
       page: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().positive().optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
@@ -141,7 +144,7 @@ export function registerProjectTools(
       pageSize: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().min(1).max(100).optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
@@ -178,7 +181,7 @@ export function registerProjectTools(
       activityDays: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().positive().optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Positive integer window in days for status activity computation. Omit to use backend default behavior (typically 30)."

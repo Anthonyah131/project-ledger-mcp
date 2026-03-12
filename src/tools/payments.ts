@@ -41,14 +41,17 @@ export function registerPaymentTools(
           "Optional. Lower due-date bound in YYYY-MM-DD format. Omit when not requested. Do not send natural-language dates."
         ),
       minRemainingAmount: z
-        .preprocess(coerceOptionalNumber, z.number().optional())
+        .preprocess(
+          coerceOptionalNumber,
+          z.union([z.number(), z.string()]).optional()
+        )
         .describe(
           "Optional. Minimum remaining balance threshold (number). Omit if the user did not ask for an amount floor."
         ),
       page: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().positive().optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
@@ -56,7 +59,7 @@ export function registerPaymentTools(
       pageSize: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().min(1).max(100).optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
@@ -111,14 +114,17 @@ export function registerPaymentTools(
           "Optional. Category UUID from trusted data context. Never invent IDs or use category name as ID. Omit if category is not explicitly provided."
         ),
       minAmount: z
-        .preprocess(coerceOptionalNumber, z.number().optional())
+        .preprocess(
+          coerceOptionalNumber,
+          z.union([z.number(), z.string()]).optional()
+        )
         .describe(
           "Optional. Minimum payment amount threshold (number). Omit if the user did not ask for an amount floor."
         ),
       page: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().positive().optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
@@ -126,7 +132,7 @@ export function registerPaymentTools(
       pageSize: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().min(1).max(100).optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
@@ -171,20 +177,23 @@ export function registerPaymentTools(
       overdueDaysMin: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().min(0).optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Minimum overdue days threshold (integer >= 0). Omit to use backend default (0)."
         ),
       minRemainingAmount: z
-        .preprocess(coerceOptionalNumber, z.number().optional())
+        .preprocess(
+          coerceOptionalNumber,
+          z.union([z.number(), z.string()]).optional()
+        )
         .describe(
           "Optional. Minimum remaining balance threshold (number). Omit if the user did not ask for an amount floor."
         ),
       page: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().positive().optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
@@ -192,7 +201,7 @@ export function registerPaymentTools(
       pageSize: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().min(1).max(100).optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
@@ -247,7 +256,7 @@ export function registerPaymentTools(
       top: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().min(1).max(100).optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Maximum number of methods to return (integer 1..100). Omit to use backend default (10)."

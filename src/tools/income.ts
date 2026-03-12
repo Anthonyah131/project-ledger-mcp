@@ -47,7 +47,10 @@ export function registerIncomeTools(
           "Optional. Allowed values: day, week, month. Omit to use default month."
         ),
       comparePreviousPeriod: z
-        .preprocess(coerceOptionalBoolean, z.boolean().optional())
+        .preprocess(
+          coerceOptionalBoolean,
+          z.union([z.boolean(), z.string()]).optional()
+        )
         .describe(
           "Optional. true includes previous-period comparison metrics, false disables comparison. Omit when comparison is not requested."
         ),
@@ -80,7 +83,7 @@ export function registerIncomeTools(
       top: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().min(1).max(100).optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Maximum projects to return (integer 1..100). Omit to use backend default (10)."

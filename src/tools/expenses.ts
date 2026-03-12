@@ -41,7 +41,10 @@ export function registerExpenseTools(
           "Optional. End date in YYYY-MM-DD format. Omit when user did not request an end date. Do not send natural-language dates."
         ),
       comparePreviousPeriod: z
-        .preprocess(coerceOptionalBoolean, z.boolean().optional())
+        .preprocess(
+          coerceOptionalBoolean,
+          z.union([z.boolean(), z.string()]).optional()
+        )
         .describe(
           "Optional. true includes previous-period comparison metrics, false disables comparison. Omit when comparison is not requested."
         ),
@@ -79,18 +82,24 @@ export function registerExpenseTools(
       top: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().min(1).max(100).optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Maximum categories to return (integer 1..100). Omit to use backend default (10)."
         ),
       includeOthers: z
-        .preprocess(coerceOptionalBoolean, z.boolean().optional())
+        .preprocess(
+          coerceOptionalBoolean,
+          z.union([z.boolean(), z.string()]).optional()
+        )
         .describe(
           "Optional. true groups remaining categories into Others. Omit when user did not request an Others bucket."
         ),
       includeTrend: z
-        .preprocess(coerceOptionalBoolean, z.boolean().optional())
+        .preprocess(
+          coerceOptionalBoolean,
+          z.union([z.boolean(), z.string()]).optional()
+        )
         .describe(
           "Optional. true includes trend delta versus previous period. Omit when trend comparison is not requested."
         ),
@@ -123,13 +132,16 @@ export function registerExpenseTools(
       top: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().min(1).max(100).optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Maximum projects to return (integer 1..100). Omit to use backend default (10)."
         ),
       includeBudgetContext: z
-        .preprocess(coerceOptionalBoolean, z.boolean().optional())
+        .preprocess(
+          coerceOptionalBoolean,
+          z.union([z.boolean(), z.string()]).optional()
+        )
         .describe(
           "Optional. true includes budget usage context per project. Omit to use backend default (typically true)."
         ),

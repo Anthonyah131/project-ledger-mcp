@@ -98,7 +98,7 @@ export function registerSummaryTools(
       minPriority: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().min(0).max(100).optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Minimum alert priority threshold (integer 0..100). Omit to use backend default (0)."

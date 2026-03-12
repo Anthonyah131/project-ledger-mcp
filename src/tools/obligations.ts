@@ -30,20 +30,23 @@ export function registerObligationTools(
       dueWithinDays: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().min(1).max(3650).optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Days-ahead window (integer 1..3650). Omit to use backend default (30)."
         ),
       minRemainingAmount: z
-        .preprocess(coerceOptionalNumber, z.number().optional())
+        .preprocess(
+          coerceOptionalNumber,
+          z.union([z.number(), z.string()]).optional()
+        )
         .describe(
           "Optional. Minimum remaining balance threshold (number). Omit if the user did not ask for an amount floor."
         ),
       page: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().positive().optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
@@ -51,7 +54,7 @@ export function registerObligationTools(
       pageSize: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().min(1).max(100).optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
@@ -96,7 +99,7 @@ export function registerObligationTools(
       page: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().positive().optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Pagination page number (integer >= 1). Omit to use default page 1."
@@ -104,7 +107,7 @@ export function registerObligationTools(
       pageSize: z
         .preprocess(
           coerceOptionalNumber,
-          z.number().int().min(1).max(100).optional()
+          z.union([z.number().int(), z.string()]).optional()
         )
         .describe(
           "Optional. Pagination size (integer 1..100). Omit to use backend default page size."
