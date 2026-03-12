@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: project-ledger-mcp
+    runtime: node
+    buildCommand: yarn install && yarn build
+    startCommand: node dist/index.js
+    envVars:
+      - key: API_BASE_URL
+        sync: false
