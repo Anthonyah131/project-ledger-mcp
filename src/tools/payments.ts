@@ -146,6 +146,14 @@ export function registerPaymentTools(
         .describe(
           "Optional. Minimum payment amount threshold (number). Omit if the user did not ask for an amount floor."
         ),
+      isActive: z
+        .preprocess(
+          coerceOptionalBoolean,
+          z.union([z.boolean(), z.string()]).optional()
+        )
+        .describe(
+          "Optional. Active-state filter for incomes. true = posted/active incomes, false = reminder-mode incomes. Omit to include both states."
+        ),
       search: z
         .preprocess(coerceOptionalString, z.string().optional())
         .describe(
